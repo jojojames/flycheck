@@ -2225,7 +2225,7 @@ buffer manually.
     (flycheck-teardown))))
 
 
-;;; Syntax checker selection for the current buffer
+;;; Legacy syntax checker selection for the current buffer
 (defun flycheck-get-checker-for-buffer ()
   "Find the checker for the current buffer.
 
@@ -2311,6 +2311,21 @@ buffer-local value of `flycheck-disabled-checkers'."
     (unless (memq checker flycheck-disabled-checkers)
       (push checker flycheck-disabled-checkers)
       (flycheck-buffer))))
+
+
+;;; Syntax checker chain selection
+(defun flycheck-get-syntax-checker-chain-for-buffer ()
+  "Get the complete syntax checker chain for the current buffer.
+
+Return a list of all syntax checkers to apply on the current
+checker in order."
+  ;; Luckily `seq-sort' calls out to `sort' internally which is stable, thus
+  ;; sorting by
+  (let ((candidates (seq-sort #'flycheck-checker-kind-lessp
+                              (seq-filter #'flycheck-may-use-checker
+                                          flycheck-checkers))))
+    )
+  )
 
 
 ;;; Syntax checks for the current buffer
